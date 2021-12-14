@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic slider</title>
+    <link rel="stylesheet" href="assets/font/fontawesome/css/all.css">
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <script src="assets/js/jquery3-5-1.js"></script>
+</head>
+
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        ul {
+            list-style-type: none;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        /* =========End Default Setting========== */
+        
+        #wrapper {
+            width: 960px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            padding: 10px 0px;
+            margin: 10px 0px;
+        }
+        
+        #wp-slider {
+            width: 350px;
+            height: auto;
+        }
+        
+        #wp-slider .show {
+            width: 350px;
+            height: 350px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        #wp-slider .show .btn {
+            position: absolute;
+            color: white;
+            font-size: 30px;
+            transform: translateY(-50%);
+            opacity: 0.6;
+            padding: 5px 5px;
+        }
+        
+        #wp-slider .show .btn:hover {
+            opacity: 1;
+        }
+        
+        #wp-slider .show .btn-next {
+            top: 50%;
+            right: 0px;
+        }
+        
+        #wp-slider .show .btn-prev {
+            top: 50%;
+            left: 0px;
+        }
+        
+        .list-thumb li {
+            width: 80px;
+            height: 80px;
+            float: left;
+            margin-right: 10px;
+        }
+        
+        .list-thumb li a {
+            display: block;
+        }
+        
+        .list-thumb li:last-child {
+            margin-right: 0;
+        }
+        
+        .active {
+            border: 1px solid #333;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+
+            // 1 THIẾT LẬP HÌNH ẢNH MẶC ĐỊNH
+            // 1.1 Lấy src của phần tử đầu tiên trong list-thumb rồi gán vào .show
+            var default_img_src = $(".list-thumb li:first-child img").attr("src");
+            $(".show img").attr("src", default_img_src);
+            // 1.2 Thêm border cho phần tử đang được active
+            $(".list-thumb li:first-child").addClass("active");
+            // 1.3 Tạo hàm để chuyên xử lý công việc lấy src của hình ảnh được active và gán vào show
+            function showImg() {
+                // Tạo biến để chứa src của hình ảnh được active
+                img_src = $(".list-thumb li.active").find("img").attr("src");
+                //  Gán giá trị biến vào img thuộc phần tử .show
+                $(".show img").attr("src", img_src);
+            };
+
+            // 2 HIỂN THỊ ẢNH KHI ĐƯỢC CLICK
+            $(".list-thumb li a").click(function() {
+                // 2.1 add class active cho phần tử được click
+                $(".list-thumb li").removeClass("active");
+                $(this).parent("li").addClass("active");
+                // 2.2 Dùng hàm showImg() để xuất lên div.show
+                showImg();
+
+                return false;
+            });
+
+            // 3 NEXT BUTTON
+            // 3.1 Click vào next button thì tìm đến phần tử đang active
+            // xóa class active thày vào class next-active
+            $("a.btn-next").click(function() {
+                $(".list-thumb li.active").removeClass("active").addClass("next-active");
+                //3.2 Thêm class active cho phần tử phía sau liền kề .next-active
+                // nếu phần tử phía sau liền kề là phần tử cuối cùng thì addCLass active cho phần tử đầu tiên.
+                if ($(".list-thumb li.next-active").is("li:last-child")) {
+                    $(".list-thumb li:first-child").addClass("active");
+                    // 3.3 Sau thêm class active thì dùng hàm showImg() để xuất lên div.show
+                    showImg();
+                } else {
+                    $(".list-thumb li.next-active").next("li").addClass("active");
+                    // Dùng hàm showImg() để xuất lên div.show
+                    showImg();
+                };
+                $(".list-thumb li").removeClass("next-active");
+
+                return false;
+            });
+
+            // 4 PREV BUTTON
+            // Tương tự phần 3 nhưng làm ngược lại
+            $("a.btn-prev").click(function() {
+                $(".list-thumb li.active").removeClass("active").addClass("prev-active");
+                // Thêm class active cho phần tử phía sau liền kề .next-active
+                // nếu phần tử phía sau liền kề là phần tử cuối cùng thì addCLass active cho phần tử đầu tiên.
+                if ($(".list-thumb li.prev-active").is("li:first-child")) {
+                    $(".list-thumb li:last-child").addClass("active");
+                    // Dùng hàm showImg() để xuất lên div.show
+                    showImg();
+                } else {
+                    $(".list-thumb li.prev-active").prev("li").addClass("active");
+                    // Dùng hàm showImg() để xuất lên div.show
+                    showImg();
+                };
+                $(".list-thumb li").removeClass("prev-active");
+
+                return false;
+            });
+
+        });
+    </script>
+
+    <div id="wrapper">
+        <h1>Basic Slider Product</h1>
+        <div id="wp-slider">
+            <div class="show">
+                <a href=""><img src="assets/images/thumb_1.png" alt=""></a>
+                <a href="" class="btn btn-next"><i class="fas fa-chevron-right"></i></a>
+                <a href="" class="btn btn-prev"><i class="fas fa-chevron-left"></i></a>
+            </div>
+
+            <div class="wp-list-thumb">
+                <ul class="list-thumb">
+                    <li>
+                        <a href=""><img src="assets/images/thumb_1.png" alt=""></a>
+                    </li>
+                    <li>
+                        <a href=""><img src="assets/images/thumb_2.png" alt=""></a>
+                    </li>
+                    <li>
+                        <a href=""><img src="assets/images/thumb_3.png" alt=""></a>
+                    </li>
+                    <li>
+                        <a href=""><img src="assets/images/thumb_4.png" alt=""></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
